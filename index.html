@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Topup Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07031a;--card:#140a33;--line:#2c1b66;--p1:#7b2ff7;--p2:#00c6ff;--text:#fff;--muted:#b9a9f5}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Kantumruy Pro','Poppins',sans-serif;color:var(--text);background:var(--bg);min-height:100vh}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:0 18px 120px}
+
+/* ===== Animated Background ===== */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+  background:linear-gradient(180deg,#0a0425,#07031a 60%,#0b0530)}
+
+/* ពន្លឺ Aurora */
+.bg::before{content:"";position:absolute;inset:-20%;
+  background:
+    radial-gradient(40% 35% at 20% 25%,#7b2ff766,transparent 70%),
+    radial-gradient(35% 30% at 82% 18%,#00c6ff4d,transparent 70%),
+    radial-gradient(45% 40% at 72% 82%,#c026d34d,transparent 70%),
+    radial-gradient(30% 30% at 15% 85%,#2de2ff33,transparent 70%);
+  filter:blur(30px);animation:drift 18s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(4%,3%) rotate(6deg) scale(1.12)}}
+
+/* ក្រឡាចត្រង្គ (Grid) ស្រាលៗ */
+.bg::after{content:"";position:absolute;inset:0;
+  background-image:linear-gradient(#ffffff0b 1px,transparent 1px),linear-gradient(90deg,#ffffff0b 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 25%,#000 15%,transparent 75%);
+  mask-image:radial-gradient(ellipse at 50% 25%,#000 15%,transparent 75%)}
+
+/* ផ្កាយភ្លឺបញ្ចេញពន្លឺ */
+.stars{position:absolute;inset:0;opacity:.55;animation:tw 4s ease-in-out infinite alternate;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),
+    radial-gradient(1px 1px at 90px 120px,#c9a7ff,transparent),
+    radial-gradient(1.5px 1.5px at 160px 60px,#2de2ff,transparent),
+    radial-gradient(1px 1px at 130px 180px,#fff,transparent);
+  background-size:200px 200px}
+@keyframes tw{from{opacity:.25}to{opacity:.75}}
+
+@media (prefers-reduced-motion:reduce){.bg::before,.stars{animation:none}}
+
+/* Header */
+header{position:sticky;top:0;z-index:20;background:#0b052499;-webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid #7b2ff744;box-shadow:0 4px 30px #7b2ff722}
+.hd{max-width:520px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 18px}
+.logo{width:56px;height:56px;border-radius:50%;border:2px solid #c9a7ff;background:linear-gradient(135deg,var(--p1),var(--p2));
+  display:grid;place-items:center;font:800 20px Poppins;flex:none;overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:cover}
+.brand{flex:1;line-height:1.15}
+.brand b{display:block;font:800 18px Poppins}
+.brand b span{color:#2de2ff}
+.brand small{color:var(--muted);font-size:12px}
+.cur{display:flex;border:1px solid var(--line);border-radius:30px;padding:4px;background:#120a30}
+.cur button{border:0;background:none;color:var(--muted);font:700 13px Poppins;padding:8px 12px;border-radius:24px;cursor:pointer}
+.cur button.on{background:linear-gradient(135deg,#1aa8ff,#0a5bd6);color:#fff;box-shadow:0 0 14px #1aa8ff88}
+.tg{display:flex;align-items:center;gap:8px;text-decoration:none;color:#fff;font-weight:700;
+  background:linear-gradient(135deg,#0aa5e8,#0a6fd6);padding:12px 18px;border-radius:30px;box-shadow:0 0 18px #00c6ff66}
+
+/* Banner */
+.banner{height:190px;border-radius:0 0 24px 24px;overflow:hidden;border:1px solid var(--line);
+  background:linear-gradient(120deg,#2b0a73,#5b1fd1 50%,#0a7fe0);display:grid;place-items:center;position:relative}
+.banner img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.banner::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 55%,#07031acc)}
+.banner{box-shadow:0 10px 50px #7b2ff744;border-color:#7b2ff755}
+.banner span{font:800 30px Poppins;letter-spacing:1px;text-shadow:0 0 20px #c18cff}
+
+/* Section title */
+.title{margin:22px 0;padding:18px;border-radius:22px;text-align:center;
+  background:linear-gradient(100deg,#6b2bd9,#3b6df0 60%,#16d5f5);border:1px solid #8fe9ff88;box-shadow:0 0 30px #5b3cff66}
+.title h2{font-size:26px;letter-spacing:1px}
+.title h2::after{content:"";display:block;width:70px;height:3px;background:#2de2ff;margin:6px auto 4px;border-radius:3px}
+.title p{font-size:15px;color:#e8dcff}
+
+/* Game grid */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.game{background:linear-gradient(160deg,#1a0e4592,#0e073085);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #7b2ff744;border-radius:20px;padding:12px;
+  cursor:pointer;transition:.2s;text-align:center;position:relative}
+.game:hover{transform:translateY(-4px);border-color:#2de2ff88;box-shadow:0 8px 30px #7b2ff777,0 0 18px #2de2ff33}
+.thumb{aspect-ratio:1;border-radius:16px;overflow:hidden;position:relative;display:grid;place-items:center;font:800 34px Poppins}
+.thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.badge{position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:2;white-space:nowrap;
+  font:700 11px Poppins;padding:4px 10px;border-radius:20px;background:linear-gradient(135deg,#8a3cff,#2f7bff);border:1px solid #ffffff55}
+.gname{margin-top:10px;padding:8px 4px;border-radius:12px;font:700 11.5px Poppins;letter-spacing:.3px;
+  background:linear-gradient(120deg,#7b2ff7,#4a67f5 60%,#12cdf5);border:1px solid #ffffff44}
+.game.out{cursor:not-allowed;opacity:.9}
+.game.out:hover{transform:none;box-shadow:none}
+.game.out .thumb{filter:grayscale(1) brightness(.55)}
+.stamp{position:absolute;z-index:3;left:50%;top:42%;transform:translate(-50%,-50%) rotate(-6deg);
+  background:#e23a30;font:800 13px Poppins;padding:7px 10px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 12px #0008;border:1px solid #ffffff55}
+.stampkh{position:absolute;z-index:3;left:0;right:0;top:62%;color:#f3c9c9;font-size:13px}
+
+/* Modal */
+.modal{position:fixed;inset:0;background:#000b;z-index:50;display:none;align-items:flex-end;justify-content:center}
+.modal.show{display:flex}
+.sheet{width:100%;max-width:520px;max-height:92vh;overflow:auto;background:#0d0629ea;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid #7b2ff755;
+  border-radius:26px 26px 0 0;padding:18px;animation:up .25s ease}
+@keyframes up{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+.sh-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.sh-head .thumb{width:64px;height:64px;border-radius:14px;font-size:22px;flex:none}
+.sh-head h3{flex:1;font:800 18px Poppins}
+.x{border:0;background:#2a1a66;color:#fff;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer}
+/* ===== Buy bar ===== */
+.buybar{position:sticky;bottom:-18px;z-index:5;margin:18px -18px -18px;padding:18px;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  background:#0d0629f5;border-top:1px solid #7b2ff744}
+.bb-info{min-width:0;line-height:1.3}
+.bb-pack{color:var(--muted);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bb-pack b{color:#fff;font:700 16px Poppins}
+.bb-total{margin-top:4px;color:#19d9ff;font:700 20px 'Kantumruy Pro',Poppins;text-shadow:0 0 14px #19d9ff88}
+.bb-total span{font:800 22px Poppins}
+.buy{flex:none;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;color:#fff;
+  font:700 16px 'Kantumruy Pro','Poppins';padding:16px 26px;border-radius:40px;white-space:nowrap;
+  border:2px solid #6f8cff99;background:linear-gradient(100deg,#8a3cff,#c026d3 50%,#12b5e8);
+  box-shadow:0 0 26px #8a3cff77;transition:.2s}
+.buy:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 0 34px #c026d3aa}
+.buy .arr{font-size:20px;font-weight:400}
+.buy:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+@media (max-width:480px){
+  .buybar{flex-direction:column;align-items:stretch;gap:12px}
+  .bb-info{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .bb-total{margin-top:0}
+  .buy{width:100%}
+}
+@media (min-width:768px){.buybar{bottom:-28px;margin:22px -28px -28px;padding:22px 28px}.buy{font-size:19px;padding:18px 40px}.bb-total span{font-size:26px}}
+
+/* Step cards */
+.step{border:1.5px solid #4b2aa0;border-radius:22px;overflow:hidden;background:#120a30aa;margin-bottom:18px;box-shadow:0 0 24px #5b3cff22}
+.step-h{display:flex;align-items:center;gap:12px;padding:16px 18px;font:700 17px 'Kantumruy Pro','Poppins';
+  background:linear-gradient(100deg,#7b2ff7,#4a67f5 70%,#1a8fe8);border-bottom:1px solid #6f8cff88}
+.step-h .ico{font-size:24px}
+.step-b{padding:18px}
+.fl{display:block;font:700 15px Poppins,'Kantumruy Pro';margin:0 0 8px}
+.fi{width:100%;padding:15px 16px;border-radius:16px;border:1.5px solid #5330b5;background:#1a0f40;color:#fff;
+  font:500 16px ui-monospace,Menlo,Consolas,monospace;margin-bottom:16px}
+.fi::placeholder{color:#8f80c9}
+.fi:focus{outline:none;border-color:#2de2ff;box-shadow:0 0 14px #2de2ff55}
+.fi.nick{margin:14px 0 4px}
+.chk{display:block;width:100%;border:0;cursor:pointer;color:#fff;font:700 16px 'Kantumruy Pro';padding:15px;border-radius:16px;
+  background:linear-gradient(120deg,#7b2ff7,#12cdf5);box-shadow:0 0 22px #3f8cff66}
+.chk:disabled{opacity:.5}
+.nickmsg{font-size:13px;margin-bottom:6px;min-height:18px;color:var(--muted)}
+.nickmsg.ok{color:#4ff0a0}
+.nickmsg.err{color:#ff7b7b}
+.hintrow{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:10px;color:var(--muted);font-size:13.5px}
+.hintrow a{color:#2de2ff;font-weight:700;text-decoration:none;white-space:nowrap;font-size:15px}
+.howbox{display:none;margin-top:12px;padding:12px 14px;border-radius:14px;background:#1a0f40;border:1px dashed #5330b5;color:#d8ccff;font-size:13.5px;line-height:1.6}
+.howbox.show{display:block}
+
+/* Stock */
+.stock{display:flex;align-items:center;gap:16px;padding:18px;border-radius:22px;margin-bottom:6px;
+  border:2px solid #2fc98c;background:linear-gradient(110deg,#07372d,#1a0a45)}
+.stock .ok{flex:none;width:64px;height:64px;border-radius:50%;border:3px solid #2fc98c;color:#2fc98c;display:grid;place-items:center;font-size:34px;font-weight:800}
+.stock h4{color:#6df0b9;font-size:16px;line-height:1.5}
+.stock .rb{display:inline-block;padding:5px 12px;border-radius:8px;border:1px solid #2fc98c;background:#0b4a39;color:#6df0b9;font:700 13px Poppins}
+.stock p{color:#cfc4f5;font-size:13.5px;line-height:1.5}
+.stock .stx{flex:1;min-width:0}
+.stock .tt{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-bottom:6px}
+.act{display:none}
+
+/* Footer & help */
+footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 0;border-top:1px solid var(--line);margin-top:40px}
+footer b{color:#fff}
+.help{position:fixed;right:16px;bottom:16px;z-index:30;text-decoration:none;color:#fff;display:flex;align-items:center;gap:12px;
+  font-weight:700;font-size:17px;background:linear-gradient(120deg,#0aa5e8,#0a6fd6);padding:14px 20px;border-radius:40px;box-shadow:0 0 24px #00c6ffaa}
+.help .c{width:38px;height:38px;border-radius:50%;background:#ffffff33;display:grid;place-items:center}
+
+/* Tabs + packages */
+.tabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.tabs:empty{display:none}
+.tab{border:1.5px solid #3b2a82;background:#170d3d;color:#e6ddff;cursor:pointer;font:700 14px 'Kantumruy Pro','Poppins';padding:10px 18px;border-radius:30px;transition:.15s}
+.tab:hover{border-color:#8a5cff}
+.tab.on{background:linear-gradient(120deg,#8a3cff,#12b5e8);border-color:#fff;color:#fff;box-shadow:0 0 18px #12b5e888}
+.sec{margin-bottom:18px}
+.sec-h{display:flex;align-items:center;gap:10px;font:800 19px Poppins,'Kantumruy Pro';padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #2c1b66}
+.cnt{font:700 13px Poppins;padding:3px 10px;border-radius:8px;background:#3a1f7a;border:1px solid #6a45c9;color:#e6ddff}
+.pkgs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.pkg{position:relative;min-width:0;padding:12px;gap:12px;border-radius:18px;background:#130a3599;border:1.5px solid #3b2a82;
+  cursor:pointer;display:flex;align-items:center;transition:.15s}
+.pkg:hover{border-color:#8a5cff}
+.pkg.sel{border-color:#2de2ff;background:#1b1050;box-shadow:0 0 16px #2de2ff55}
+.pkg .pic{position:relative;flex:none;width:54px;height:54px;border-radius:14px;overflow:hidden;display:grid;place-items:center;font-size:26px;background:#0b0624;border:1px solid #2c1b66}
+.pkg .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pkg .pin{min-width:0;flex:1}
+.pkg .pin b{display:block;font:700 15px Poppins,'Kantumruy Pro';white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pkg .pin .pr{display:block;margin-top:4px;color:#19d9ff;font:800 20px Poppins;text-shadow:0 0 12px #19d9ffaa}
+.pkg .ptag{position:absolute;top:-8px;right:10px;z-index:2;padding:3px 10px;border-radius:20px;background:#5a1636;border:1px solid #d84a85;color:#ffc2d9;font:700 11px Poppins}
+
+/* ===== Step 3 : Payment ===== */
+.pay{display:flex;align-items:center;gap:16px;padding:16px;border-radius:20px;cursor:pointer;
+  border:2px solid #2de2ff;background:#0f1530;box-shadow:0 0 18px #2de2ff44}
+.pay .pl{flex:none;width:64px;height:64px;border-radius:14px;background:#fff;display:grid;place-items:center;overflow:hidden;color:#e1232e;font:800 12px Poppins}
+.pay .pl img{width:100%;height:100%;object-fit:contain}
+.pay .pt{flex:1;min-width:0}
+.pay .pt b{font:700 16px Poppins}
+.pay .pt small{display:block;color:var(--muted);font-size:13px;margin-top:4px;line-height:1.4}
+.fee{margin-left:8px;font:700 11px Poppins;padding:3px 8px;border-radius:6px;background:#0b4a39;border:1px solid #2fc98c;color:#6df0b9}
+.radio{flex:none;width:28px;height:28px;border-radius:50%;background:#2de2ff;display:grid;place-items:center}
+.radio::after{content:"";width:12px;height:12px;border-radius:50%;background:#000}
+.terms{display:flex;align-items:center;gap:10px;margin-top:14px;color:var(--muted);font-size:14px;cursor:pointer}
+.terms input{width:18px;height:18px;accent-color:#2de2ff}
+
+/* QR popup */
+.qrm{position:fixed;inset:0;background:#000c;z-index:60;display:none;align-items:center;justify-content:center;padding:18px}
+.qrm.show{display:flex}
+.qrc{width:100%;max-width:380px;background:#0d0629;border:1px solid var(--line);border-radius:26px;padding:20px;text-align:center;max-height:94vh;overflow:auto}
+.qrc h3{font:800 18px Poppins;margin-bottom:4px}
+.qrbox{background:#fff;border-radius:18px;padding:12px;margin:14px auto;width:260px;max-width:100%;min-height:260px;display:grid;place-items:center;color:#333}
+.qrbox img{width:100%;display:block}
+.qramt{font:800 28px Poppins;color:#2de2ff}
+.qrsum{font-size:13.5px;color:#d8ccff;line-height:1.7;margin:8px 0 14px}
+.qrbtn{display:block;width:100%;border:0;cursor:pointer;color:#fff;font:700 15px 'Kantumruy Pro';padding:14px;border-radius:30px;text-decoration:none;margin-top:10px;background:linear-gradient(120deg,#7b2ff7,#12cdf5)}
+.qrbtn.alt{background:#2a1a66}
+
+/* Mobile */
+.tg{display:none}
+@media (max-width:400px){
+  .hd{gap:8px;padding:10px 12px}.logo{width:46px;height:46px;font-size:16px}.brand b{font-size:15px}
+  .cur button{padding:7px 9px;font-size:12px}.wrap{padding:0 12px 120px}.grid{gap:10px}.game{padding:9px}
+  .gname{font-size:10.5px}.help{font-size:15px;padding:12px 16px}
+}
+/* Tablet / Desktop */
+@media (min-width:768px){
+  .hd,.wrap{max-width:1180px}.hd{padding:14px 28px;gap:18px}.wrap{padding:0 28px 120px}
+  .logo{width:66px;height:66px;font-size:24px}.brand b{font-size:24px}.brand small{font-size:14px}
+  .cur button{font-size:14px;padding:10px 18px}.tg{display:flex}
+  .banner{height:360px;border-radius:0 0 32px 32px}.banner span{font-size:56px}
+  .title{margin:36px 0;padding:26px}.title h2{font-size:34px}.title p{font-size:18px}
+  .grid{grid-template-columns:repeat(4,1fr);gap:24px}.game{padding:16px;border-radius:24px}
+  .badge{font-size:12px;padding:5px 14px;top:8px}.gname{font-size:13.5px;padding:11px 6px;margin-top:14px}
+  .stamp{font-size:16px;padding:9px 14px}.stampkh{font-size:16px}
+  .modal{align-items:center;padding:24px}
+  .sheet{max-width:780px;border-radius:28px;padding:28px;animation:none}
+  .sh-head .thumb{width:80px;height:80px}.sh-head h3{font-size:22px}
+  .pkgs{grid-template-columns:repeat(3,1fr);gap:14px}footer{font-size:14px}.help{right:28px;bottom:28px}
+  .idrow{display:flex;gap:16px;align-items:flex-end}
+  .idrow .cell{flex:1;min-width:0}.idrow #zoneWrap{flex:none;width:230px}.idrow .btn{flex:none}
+  .idrow .fi{margin-bottom:0}.idrow .chk{width:auto;white-space:nowrap;padding:15px 28px}
+  .hintrow{margin-top:14px}.stock{padding:16px 22px}.stock .ok{width:54px;height:54px;font-size:28px}
+  .act{display:inline-flex;align-items:center;gap:8px;flex:none;padding:9px 18px;border-radius:30px;border:1px solid #3aa88a;background:#0f4a43;color:#cfeee3;font:700 14px Poppins;white-space:nowrap}
+  .act::before{content:"";width:9px;height:9px;border-radius:50%;background:#2fe6a0}
+}
+@media (min-width:1100px){.grid{grid-template-columns:repeat(5,1fr)}.banner{height:420px}.sheet{max-width:860px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="stars"></div></div>
+
+<header>
+  <div class="hd">
+    <div class="logo" id="logo">ML</div>
+    <div class="brand">
+      <b id="b1">MY <span>TOPUP</span></b>
+      <small>Official Fast Gaming Store</small>
+    </div>
+    <div class="cur">
+      <button id="usd" class="on">USD ($)</button>
+      <button id="khr">KHR (៛)</button>
+    </div>
+    <a class="tg" id="tgTop" target="_blank" href="#">✈ Telegram</a>
+  </div>
+</header>
+
+<div class="wrap" style="padding-top:0">
+  <div class="banner" id="banner"><span>MY TOPUP</span></div>
+  <div class="title">
+    <h2>ហ្គេមពេញនិយម</h2>
+    <p>ហ្គេម សម្រាប់បញ្ចូលទឹកប្រាក់</p>
+  </div>
+  <div class="grid" id="grid"></div>
+  <footer>© 2026 <b id="fname">MY TOPUP</b>. All Rights Reserved.</footer>
+</div>
+
+<a class="help" id="help" target="_blank" href="#">ត្រូវការជំនួយ ? <span class="c">✈</span></a>
+
+<!-- Product modal -->
+<div class="modal" id="modal">
+  <div class="sheet">
+    <div class="sh-head">
+      <div class="thumb" id="mThumb"></div>
+      <h3 id="mName"></h3>
+      <button class="x" onclick="closeM()">✕</button>
+    </div>
+
+    <!-- ដំហានទី ១ -->
+    <div class="step">
+      <div class="step-h"><span class="ico">🪪</span> ដំហានទី ១ : បញ្ចូល អាយឌី (Account Info)</div>
+      <div class="step-b">
+        <div class="idrow">
+          <div class="cell">
+            <label class="fl" id="uidLbl" for="uid">User ID (8-10 digits)</label>
+            <input class="fi" id="uid" placeholder="User ID (8-10 digits)" inputmode="numeric">
+          </div>
+          <div class="cell" id="zoneWrap">
+            <label class="fl" for="zone">Zone ID (4-5 digits)</label>
+            <input class="fi" id="zone" placeholder="e.g. 1234" inputmode="numeric">
+          </div>
+          <div class="btn">
+            <button class="chk" id="chk" type="button">🔍 ពិនិត្យ ឈ្មោះ</button>
+          </div>
+        </div>
+        <div class="hintrow">
+          <span>សូមប្រាកដថា User ID ត្រឹមត្រូវដើម្បីទទួលបានពេជ្រភ្លាមៗ</span>
+          <a href="#" id="howId">របៀបរក ID?</a>
+        </div>
+        <div class="howbox" id="howBox">បើកហ្គេម → ចុចរូបប្រូហ្វាល់ (Profile) ខាងលើឆ្វេង → ID និង Zone ID នឹងបង្ហាញនៅទីនោះ ។</div>
+        <input class="fi nick" id="nick" placeholder="ឈ្មោះ Account ហ្គេម (Nickname)">
+        <div class="nickmsg" id="nickMsg"></div>
+      </div>
+    </div>
+
+    <!-- ដំហានទី ២ -->
+    <div class="step">
+      <div class="step-h"><span class="ico">💎</span> ដំហានទី ២ : ជ្រើសរើសកញ្ចប់ ពេជ្រ (Select Package)</div>
+      <div class="step-b">
+        <div class="tabs" id="tabs"></div>
+        <div id="pkgs"></div>
+      </div>
+    </div>
+
+    <!-- ដំហានទី ៣ -->
+    <div class="step">
+      <div class="step-h"><span class="ico">🏛️</span> ដំហានទី ៣ : ទូទាត់ប្រាក់បានគ្រប់ធនាគារ (Payment Method)</div>
+      <div class="step-b">
+        <div class="pay">
+          <div class="pl" id="bkLogo">BAKONG</div>
+          <div class="pt">
+            <b>Bakong KHQR (National Rail) <span class="fee">0% FEE</span></b>
+            <small>Scan to pay with ABA, ACLEDA, Sathapana, Wing or any banking app</small>
+          </div>
+          <div class="radio"></div>
+        </div>
+        <label class="terms">
+          <input type="checkbox" id="terms" checked>
+          ខ្ញុំយល់ព្រមតាមលក្ខខណ្ឌប្រើប្រាស់ (Agree to Terms and Conditions)
+        </label>
+      </div>
+    </div>
+
+    <!-- ស្តុក -->
+    <div class="stock">
+      <div class="ok">✓</div>
+      <div class="stx">
+        <div class="tt">
+          <h4>មានស្តុកពេញលេញ (In Stock 24/7) — អាចទិញបានភ្លាមៗ</h4>
+          <span class="rb">READY TO BUY ✓</span>
+        </div>
+        <p>ទូទាត់តាម Bakong KHQR • ស្កេនតាមកម្មវិធីធនាគារណាមួយ</p>
+      </div>
+      <div class="act">Active 24/7</div>
+    </div>
+
+    <div class="buybar">
+      <div class="bb-info">
+        <div class="bb-pack">កញ្ចប់: <b id="bbPack">—</b></div>
+        <div class="bb-total">សរុប : <span id="total">—</span></div>
+      </div>
+      <button class="buy" id="buy" disabled>បង់ ឥឡូវ (Buy Now) <span class="arr">⟶</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- QR popup -->
+<div class="qrm" id="qrModal">
+  <div class="qrc">
+    <h3>ស្កេនដើម្បីបង់ប្រាក់ (Bakong KHQR)</h3>
+    <div class="qramt" id="qrAmt"></div>
+    <div class="qrbox" id="qrBox"></div>
+    <div class="qrsum" id="qrSum"></div>
+    <a class="qrbtn" id="qrSend" target="_blank" href="#">✈ ផ្ញើបង្កាន់ដៃបង់ប្រាក់</a>
+    <button class="qrbtn alt" type="button" onclick="$('qrModal').classList.remove('show')">បិទ</button>
+  </div>
+</div>
+
+<script>
+/* ===================== ✏️ EDIT HERE ===================== */
+const STORE = {
+  name1: "BoyVath",
+  name2: "TOPUP",
+  logo:  "logo.png",
+  banner:"banner.png",
+  telegram: "YOUR_USERNAME",   // Telegram username (គ្មាន @)
+  khrRate: 4100,               // 1$ = ៛
+  checkApi: "http://localhost:3000/check", // API ស្វែងរកឈ្មោះ Account (ទទេ = បញ្ចូលដោយដៃ) — ពេល Deploy ប្តូរជា https://your-server.com/check
+  khqr: "khqr.png",            // រូប QR ហាង (ប្រើពេលគ្មាន khqrApi)
+  bakongLogo: "bakongkhqr.png",    // Logo Bakong
+  khqrApi: ""                  // ឧ. "http://localhost:3000/api/khqr" (មើល server.js)
+};
+
+const GAMES = [
+  { id:"mlbb", name:"MOBILE LEGENDS", badge:"POPULAR", img:"mlbb.png", color:"#2a5bd7", unit:"Diamonds", icon:"💎", zone:true,
+    packs:[
+      {n:"86 Diamonds",p:1.20},{n:"172 Diamonds",p:2.40},{n:"257 Diamonds",p:3.50},{n:"344 Diamonds",p:4.70},
+      {n:"429 Diamonds",p:5.80},{n:"514 Diamonds",p:7.00},{n:"706 Diamonds",p:9.50},
+      {n:"Weekly Diamond Pass",p:1.49},{n:"2x Weekly Diamond Pass",p:2.80},
+      {n:"3x Weekly Diamond Pass",p:4.29,tag:"Full Ticket"},
+      {n:"4x Weekly Diamond Pass",p:5.59},{n:"5x Weekly Diamond Pass",p:6.99},{n:"10x Weekly Diamond Pass",p:13.99}
+    ]},
+  { id:"ff", name:"FREE FIRE MOBILE", badge:"HOT", img:"freefire.jpg", color:"#e8801a", unit:"Diamonds", icon:"💎", zone:false,
+    packs:[
+      {n:"100 Diamonds",p:0.95},{n:"310 Diamonds",p:2.80},{n:"520 Diamonds",p:4.60},{n:"1060 Diamonds",p:9.20},
+      {n:"2180 Diamonds",p:18.00},{n:"Weekly Member",p:1.60},{n:"Monthly Member",p:7.50}
+    ]},
+  { id:"rbx", name:"ROBLOX (ROBUX)", badge:"INSTANT CODE", img:"roblox.jpg", color:"#0a3cff", unit:"Robux", icon:"🟦", zone:false, noId:true,
+    packs:[{n:"400 Robux",p:5.00},{n:"800 Robux",p:10.00},{n:"1700 Robux",p:20.00},{n:"4500 Robux",p:50.00}]},
+  { id:"pubg", name:"PUBG MOBILE", img:"pubg.jpg", color:"#444", out:true, packs:[] },
+  { id:"bs",   name:"BLOOD STRIKE", img:"bloodstrike.jpg", color:"#333", out:true, packs:[] },
+  { id:"zp",   name:"ZEPETO", img:"zepeto.jpg", color:"#555", out:true, packs:[] }
+];
+/* ========================================================= */
+
+let cur = "USD", game = null, sel = null, tab = "all";
+const $ = id => document.getElementById(id);
+
+/* Brand */
+$("b1").innerHTML = `${STORE.name1} <span>${STORE.name2}</span>`;
+$("fname").textContent = `${STORE.name1} ${STORE.name2}`;
+$("logo").textContent = STORE.name1.slice(0,1)+STORE.name2.slice(0,1);
+if(STORE.logo) $("logo").innerHTML = `<img src="${STORE.logo}" alt="">`;
+if(STORE.banner) $("banner").innerHTML = `<img src="${STORE.banner}" alt="">`;
+else $("banner").innerHTML = `<span>${STORE.name1} ${STORE.name2}</span>`;
+$("help").href = `https://t.me/${STORE.telegram}`;
+$("tgTop").href = `https://t.me/${STORE.telegram}`;
+if(STORE.bakongLogo) $("bkLogo").innerHTML = `<img src="${STORE.bakongLogo}" alt="" onerror="this.remove()">`;
+
+const money = usd => cur==="USD" ? "$"+usd.toFixed(2)
+  : (Math.round(usd*STORE.khrRate/100)*100).toLocaleString("en")+"៛";
+
+function thumbHTML(g){
+  const ini = g.name.split(" ").map(w=>w[0]).slice(0,2).join("");
+  return `${ini}<img src="${g.img}" alt="${g.name}" onerror="this.remove()">`;
+}
+
+function renderGrid(){
+  $("grid").innerHTML = GAMES.map(g=>`
+    <div class="game ${g.out?'out':''}" ${g.out?'':`onclick="openM('${g.id}')"`}>
+      ${g.badge?`<div class="badge">${g.badge}</div>`:""}
+      <div class="thumb" style="background:linear-gradient(135deg,${g.color},#120838)">
+        ${thumbHTML(g)}
+        ${g.out?`<div class="stamp">OUT OF STOCK</div><div class="stampkh">ដាច់ស្តុក</div>`:""}
+      </div>
+      <div class="gname">${g.name}</div>
+    </div>`).join("");
+}
+
+function openM(id){
+  game = GAMES.find(g=>g.id===id); sel = null; tab = "all";
+  $("mName").textContent = game.name;
+  $("mThumb").style.background = `linear-gradient(135deg,${game.color},#120838)`;
+  $("mThumb").innerHTML = thumbHTML(game);
+  $("zoneWrap").style.display = game.zone ? "" : "none";
+  const idText = game.noId ? "Roblox Username" : (game.zone ? "User ID (8-10 digits)" : "Player ID");
+  $("uidLbl").textContent = idText; $("uid").placeholder = idText;
+  $("howBox").classList.remove("show");
+  $("uid").value = ""; $("zone").value = ""; $("nick").value = ""; setMsg("");
+  $("nick").placeholder = STORE.checkApi ? "ឈ្មោះ Account (ចុច ស្វែងរក)" : "ឈ្មោះ Account ហ្គេម (បញ្ចូលដោយដៃ)";
+  $("nick").readOnly = !!STORE.checkApi;
+  renderPkgs();
+  $("modal").classList.add("show");
+}
+function closeM(){ $("modal").classList.remove("show"); }
+$("modal").addEventListener("click",e=>{ if(e.target.id==="modal") closeM(); });
+
+/* Package categories */
+const CAT_ORDER = ["dia","weekly","sub"];
+const CAT_ICON  = { dia:"💎", weekly:"🎟️", sub:"👑" };
+function catOf(k){
+  if(k.cat) return k.cat;
+  if(/member|subscription|twilight/i.test(k.n)) return "sub";
+  if(/weekly/i.test(k.n)) return "weekly";
+  return "dia";
+}
+function catLabel(c){
+  return c==="dia" ? (game.unit||"Diamonds") : c==="weekly" ? "Weekly Pass" : "សមាជិកភាព (Subscriptions)";
+}
+function setTab(t){ tab = t; renderPkgs(); }
+
+function renderPkgs(){
+  const cats = CAT_ORDER.filter(c => game.packs.some(k => catOf(k)===c));
+  if(tab!=="all" && !cats.includes(tab)) tab = "all";
+  $("tabs").innerHTML = cats.length>1
+    ? [["all","✨ ទាំងអស់ (All)"], ...cats.map(c=>[c, CAT_ICON[c]+" "+catLabel(c)])]
+        .map(([id,l])=>`<button type="button" class="tab ${tab===id?'on':''}" onclick="setTab('${id}')">${l}</button>`).join("")
+    : "";
+  const show = tab==="all" ? cats : [tab];
+  $("pkgs").innerHTML = show.map(c=>{
+    const items = game.packs.map((k,i)=>({k,i})).filter(o=>catOf(o.k)===c);
+    return `<div class="sec">
+      <div class="sec-h">${catLabel(c)} <span class="cnt">${items.length}</span></div>
+      <div class="pkgs">${items.map(({k,i})=>{
+        const pic = k.img || game.packImg;
+        return `<div class="pkg ${sel===i?'sel':''}" onclick="pick(${i})" title="${k.n}">
+          ${k.tag?`<span class="ptag">${k.tag}</span>`:""}
+          <div class="pic">${CAT_ICON[c]}${pic?`<img src="${pic}" alt="" onerror="this.remove()">`:""}</div>
+          <div class="pin"><b>${k.n}</b><span class="pr">${money(k.p)}</span></div>
+        </div>`;}).join("")}</div>
+    </div>`;
+  }).join("");
+  const k = game.packs[sel];
+  $("bbPack").textContent = k ? k.n : "—";
+  $("total").textContent = k ? money(k.p) : "—";
+  updateBuy();
+}
+function pick(i){ sel = i; renderPkgs(); }
+function updateBuy(){ $("buy").disabled = sel===null || !$("terms").checked; }
+$("terms").addEventListener("change", updateBuy);
+
+$("howId").onclick = e => { e.preventDefault(); $("howBox").classList.toggle("show"); };
+
+/* Check account name */
+function setMsg(t, cls){ const m=$("nickMsg"); m.textContent=t; m.className="nickmsg "+(cls||""); }
+async function checkAcc(){
+  const uid = $("uid").value.trim();
+  if(!uid){ $("uid").focus(); return setMsg("សូមបញ្ចូល ID ជាមុនសិន","err"); }
+  const zone = $("zone").value.trim();
+  if(!STORE.checkApi){
+    $("nick").focus();
+    return setMsg("មិនទាន់តភ្ជាប់ API ស្វែងរក — សូមបញ្ចូលឈ្មោះ Account ដោយដៃខាងក្រោម","err");
+  }
+  $("chk").disabled = true; $("nick").value = ""; setMsg("កំពុងស្វែងរក...");
+  try{
+    const url = `${STORE.checkApi}?game=${encodeURIComponent(game.id)}&id=${encodeURIComponent(uid)}&zone=${encodeURIComponent(zone)}`;
+    const d = await (await fetch(url)).json();
+    const name = d.name || d.nickname || d.username;
+    if(!name) throw new Error("not found");
+    $("nick").value = name;
+    setMsg("✔ រកឃើញ Account៖ " + name, "ok");
+  }catch(e){
+    setMsg("✖ រកមិនឃើញ Account — សូមពិនិត្យ ID ម្តងទៀត","err");
+  }
+  $("chk").disabled = false;
+}
+$("chk").onclick = checkAcc;
+["uid","zone"].forEach(id=>$(id).addEventListener("input",()=>{
+  if(STORE.checkApi){ $("nick").value=""; setMsg(""); }
+}));
+
+/* Pay via Bakong KHQR */
+$("buy").onclick = async ()=>{
+  const k = game.packs[sel];
+  const uid = $("uid").value.trim();
+  if(!uid){ $("uid").focus(); return setMsg("សូមបញ្ចូល ID ជាមុនសិន","err"); }
+  const nick = $("nick").value.trim();
+  if(STORE.checkApi && !nick){ setMsg("សូមចុច ពិនិត្យ ឈ្មោះ មុនបង់ប្រាក់","err"); return; }
+  if(!$("terms").checked) return;
+
+  const zone = game.zone ? " ("+($("zone").value.trim()||"-")+")" : "";
+  const orderId = "ORD" + Date.now().toString().slice(-7);
+  const amount = money(k.p);
+
+  $("qrAmt").textContent = amount;
+  $("qrSum").innerHTML = `Order: <b>${orderId}</b><br>${game.name} — ${k.n}<br>ID: ${uid}${zone}` + (nick ? `<br>Name: ${nick}` : "");
+  $("qrBox").textContent = "កំពុងបង្កើត QR...";
+  $("qrModal").classList.add("show");
+
+  let qrSrc = STORE.khqr;
+  if(STORE.khqrApi){
+    try{
+      const r = await fetch(STORE.khqrApi,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({orderId, amount:k.p, currency:"USD", game:game.id, pack:k.n, uid, zone:$("zone").value.trim()})});
+      const d = await r.json();
+      qrSrc = d.qrImage || qrSrc;
+    }catch(e){}
+  }
+  $("qrBox").innerHTML = `<img src="${qrSrc}" alt="Bakong KHQR" onerror="this.parentNode.textContent='សូមដាក់រូប QR (khqr.png)'">`;
+
+  const msg = `✅ បង់ប្រាក់រួច\nOrder: ${orderId}\nGame: ${game.name}\nPackage: ${k.n}\nAmount: ${amount}\nID: ${uid}${zone}` + (nick ? `\nName: ${nick}` : "");
+  $("qrSend").href = `https://t.me/${STORE.telegram}?text=${encodeURIComponent(msg)}`;
+};
+$("qrModal").addEventListener("click",e=>{ if(e.target.id==="qrModal") e.target.classList.remove("show"); });
+
+/* Currency toggle */
+function setCur(c){
+  cur = c;
+  $("usd").classList.toggle("on",c==="USD");
+  $("khr").classList.toggle("on",c==="KHR");
+  if(game && $("modal").classList.contains("show")) renderPkgs();
+}
+$("usd").onclick = ()=>setCur("USD");
+$("khr").onclick = ()=>setCur("KHR");
+
+renderGrid();
+</script>
+</body>
+</html>
